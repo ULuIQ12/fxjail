@@ -5,7 +5,7 @@ import useStorage from '@src/shared/hooks/useStorage';
 import exampleThemeStorage from '@src/shared/storages/exampleThemeStorage';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
-import { useDisclosure, Button, ButtonGroup, Stack, Box, Center, AbsoluteCenter,  Text, Heading, Image, Flex, Spacer, StackDivider, Slide, Icon   } from '@chakra-ui/react';
+import { useDisclosure, Button, ButtonGroup, Stack, Box, Center, AbsoluteCenter,  Text, Heading, Image, Flex, Spacer, StackDivider, Slide, Icon, CloseButton   } from '@chakra-ui/react';
 import hand from '@assets/img/hand.png';
 import door from '@assets/img/door.png';
 import ululogo from '@assets/img/ulu.png';
@@ -118,8 +118,21 @@ const Popup = (props) => {
             <Text fontSize='sm' color='gray.500'>version {version.current}</Text>
           </Center>
           <Center>
-            <Button onClick={onToggle} borderRadius={0} colorScheme={'hotpink'} variant={'link'}><InfoOutlineIcon boxSize={4}/></Button>
-            <Button onClick={handleToggleTheme} borderRadius={0} colorScheme={'hotpink'} variant={'link'} m={-2}>
+            <Button 
+              onClick={onToggle} 
+              borderRadius={0} 
+              colorScheme={'hotpink'} 
+              variant={'link'}
+              aria-description='Info button'
+            ><InfoOutlineIcon boxSize={4}/></Button>
+            <Button 
+              onClick={handleToggleTheme} 
+              borderRadius={0} 
+              colorScheme={'hotpink'} 
+              variant={'link'} 
+              m={-2}
+              aria-description='theme toggle button'
+              >
               {theme === 'light' ? (<MoonIcon boxSize={4}/>) : (<SunIcon boxSize={4}/>) }
               
             </Button>
@@ -132,9 +145,11 @@ const Popup = (props) => {
             backgroundColor={ theme === 'light' ? '#fff' : '#222'}
             color={theme === 'light' ? '#222' : '#fff'}
           >
+            
             <Center w={'100%'} h={'100%'}>
               <Flex direction='column' align={'center'}>
               <Image
+                aria-description='ulu logo' 
                 src={ululogo}
                 w='64px'
                 h='64px'
@@ -143,16 +158,16 @@ const Popup = (props) => {
                 <Text fontSize='sm' >extension developed by ULU</Text>
               </Box>
               <Stack p={2} direction={'row'} spacing={1}>
-                <Button onClick={handleXClick} borderRadius={0} colorScheme={'hotpink'} variant={'ghost'} >
-                <Icon viewBox='0 0 24 24' boxSize={6}>
+                <Button aria-description='ulu X profile link button' onClick={handleXClick} _hover={{  color: '#ff005c' }} borderRadius={0} colorScheme={'hotpink'} variant={'line'} >
+                <Icon aria-description='x / twitter icon' viewBox='0 0 24 24' boxSize={6}>
                   <path
                     fill='currentColor'
                     d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
                   />
                 </Icon>
                 </Button>
-                <Button onClick={handleInstagramClick} borderRadius={0} colorScheme={'hotpink'} variant={'ghost'} >
-                <Icon viewBox='0 0 512 512' boxSize={6}>
+                <Button aria-description='ulu Instagram profile link button'onClick={handleInstagramClick} _hover={{  color: '#ff005c' }} borderRadius={0} colorScheme={'hotpink'} variant={'line'} >
+                <Icon aria-description='instagram icon' viewBox='0 0 512 512' boxSize={6}>
                   <path
                     fill='currentColor'
                     d="M349.33,69.33a93.62,93.62,0,0,1,93.34,93.34V349.33a93.62,93.62,0,0,1-93.34,93.34H162.67a93.62,93.62,0,0,1-93.34-93.34V162.67a93.62,93.62,0,0,1,93.34-93.34H349.33m0-37.33H162.67C90.8,32,32,90.8,32,162.67V349.33C32,421.2,90.8,480,162.67,480H349.33C421.2,480,480,421.2,480,349.33V162.67C480,90.8,421.2,32,349.33,32Z"
@@ -168,9 +183,17 @@ const Popup = (props) => {
                 </Icon>
                 </Button>
               </Stack>
-              <Button borderRadius={0} colorScheme={'hotpink'} variant={'solid'} onClick={handleClickGalleryLink}>visit my fx(hash) gallery <ExternalLinkIcon ml={2} boxSize={6}/></Button>
+              <Button aria-description='ulu fxhash gallery link button' borderRadius={0} colorScheme={'hotpink'} variant={'solid'} onClick={handleClickGalleryLink}>visit my fx(hash) gallery <ExternalLinkIcon ml={2} boxSize={6}/></Button>
               </Flex>
             </Center>
+            <CloseButton 
+              _hover={{color:'#ff005c'}}
+              aria-description='close info panel button'
+              onClick={onToggle}
+              position='absolute'
+              right={2}
+              top={2}
+              />
           </Box>
         </Slide>
         </Box>
@@ -187,6 +210,8 @@ const Popup = (props) => {
               onClick={HandleClick}
               _hover={{ background: '#ff005c', color: '#fff' }}
               transition={"background-color 200ms"}
+              aria-disabled={!pickingEnabled}
+              aria-description='Start card picking mode button'
               >
               <Flex
                   p={2}
@@ -209,8 +234,10 @@ const Popup = (props) => {
             </Box>
             <Box 
               as='button'
-              onClick={HandleClickJail}              
+              onClick={HandleClickJail}        
+              aria-description='open prisoners list button'      
               _hover={{ background: '#ff005c', color: '#fff' }}
+              aria-disabled={!pickingEnabled}
               transition={"background-color 200ms"}
               >
                 <Flex
@@ -239,7 +266,7 @@ const Popup = (props) => {
             left={0}
             bgColor={'rgba(0,0,0,0.0)'}
             backdropFilter={'blur(5px)'}
-            w={Math.floor( popupWidth*.5 ) +'px'}
+            w={Math.floor( popupWidth ) +'px'}
             h={buttonSize + 'px'}
           >
           <Center w={'100%'} h={'100%'} p={10} textAlign={'center'}>

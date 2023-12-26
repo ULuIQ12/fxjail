@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Box, Center, Tabs, TabList, Tab, TabPanels, TabPanel, TabIndicator, Heading, Fade, CloseButton, Flex, Spacer, Button, Menu, MenuButton, MenuList, MenuItem, MenuGroup } from '@chakra-ui/react';
+import {  Box, Center, Tabs, TabList, Tab, TabPanels, TabPanel, TabIndicator, Heading, Fade, CloseButton, Flex, Spacer, Button, Menu, MenuButton, MenuList, MenuItem, MenuGroup, Spinner } from '@chakra-ui/react';
 import JailTable from './JailTable';
 import { DownloadIcon, ExternalLinkIcon, SettingsIcon } from '@chakra-ui/icons';
 import useStorage from '@src/shared/hooks/useStorage';
@@ -12,6 +12,7 @@ export default function Jail(props:any)
     const [open, setOpen] = React.useState(props.open);
     const [menuOpen, setMenuOpen] = React.useState(false);
     const theme = useStorage(exampleThemeStorage);
+
     
     const dirty = props.dirty;
     // close on esc
@@ -42,7 +43,7 @@ export default function Jail(props:any)
         document.addEventListener('keydown', handleEsc);
 
     //}, [props.open, dirty]);
-}, [open, dirty, setOpen, props.open]);
+}, [open, dirty, setOpen, props.open, setWsx, setWsy]);
 
     const exportJail = () => 
     {
@@ -107,6 +108,7 @@ export default function Jail(props:any)
                     direction={'row'}
                     p={2}
                     width='100%'
+                    
                 >
                     <Box >
                         <Heading size='md' p={2}>
@@ -117,46 +119,43 @@ export default function Jail(props:any)
                     <Box>
                         <Menu>
                             <MenuButton >
-                               <Box as="button" p={2} _hover={{bg:'hotpink.500'}} ><SettingsIcon boxSize={6}/></Box>
-                                
+                               <Box as="button" p={0} _hover={{bg:'hotpink.500'}} ><SettingsIcon boxSize={6}/></Box>                               
                             </MenuButton>
                             <MenuList 
                                 borderRadius={0}
                                 backgroundColor={ theme === 'light' ? '#fff' : '#222'}
                                 color={theme === 'light' ? '#222' : '#fff'}
-                            >
-                                
+                            >                                
                                 <MenuItem onClick={exportJail} icon={<ExternalLinkIcon /> } backgroundColor={ theme === 'light' ? '#fff' : '#222'} _hover={{bg:'hotpink.500', textColor:'fff'}}>export prisoners list</MenuItem>
                                 <MenuItem onClick={importJail} icon={<DownloadIcon />} backgroundColor={ theme === 'light' ? '#fff' : '#222'} _hover={{bg:'hotpink.500', textColor:'fff'}}>import prisoners list</MenuItem>
-
                             </MenuList>
                         </Menu>
                     </Box>  
-                    <Box>
-                        <CloseButton size='lg' onClick={() => {props.onClose()} }/>                        
-                    </Box>                    
+                    <CloseButton size='lg' onClick={() => {props.onClose()} }/>                               
                 </Flex>
-                
-                <Tabs colorScheme='hotpink' isFitted variant='line'>
+
+                <Tabs colorScheme='hotpink' isFitted variant='line' >
                     <TabList>
                         <Tab _selected={{ color: 'white', bg: 'hotpink.500' }} ><Heading as='h4' size='md' pb={4}>artists</Heading></Tab>
                         <Tab _selected={{ color: 'white', bg: 'hotpink.500' }} ><Heading as='h4' size='md' pb={4}>collections</Heading></Tab>
                     </TabList>
                     <TabIndicator
-                    mt="-1.5px"
-                    
+                    mt="-1.5px"                    
                     height="2px"
                     bg="hotpink.500"
                     borderRadius="1px"
                     />
-                    <TabPanels mt='2em' overflowY='auto' maxH={(wsy * .8 - 50)+ 'px'}>
+                    
+                    <TabPanels mt='2em' w='100%' h={( wsy * .8 - 150) + 'px'} overflowY='auto' >
+ 
                         <TabPanel>
-                        <JailTable content='artists' open={props.open} dirty={dirty}/>
+                            <JailTable display content='artists' open={props.open} dirty={dirty}/>
                         </TabPanel>
                         <TabPanel>
-                        <JailTable content='collections' open={props.open} dirty={dirty}/>
+                            <JailTable content='collections' open={props.open} dirty={dirty}/>
                         </TabPanel>
                     </TabPanels>
+                    
                 </Tabs>
                 </Box>
             </Center>

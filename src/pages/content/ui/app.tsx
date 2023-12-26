@@ -4,9 +4,11 @@ import React from 'react';
 import EndPickPopup from './EndPickPopup';
 import { FXJ_Actions, FXJ_Message } from '@root/src/shared/fxjail';
 import PickingOverlay from './PickingOverlay';
+import ImportTypePrompt from './ImportTypePrompt';
 import Jail from './Jail';
 import { FxStorage, JailItem } from '@root/src/shared/storages/fxJailStorage';
 import { timeStamp } from 'console';
+
 
 export default function App() {
 
@@ -17,9 +19,11 @@ export default function App() {
     PICKING, 
     PICKED,
     JAIL, 
+    IMPORT_PROMPT
   }
 
   const data = React.useRef(new FxStorage());
+  const importData = React.useRef(new FxStorage());
   const [contentState, setContentState] = React.useState(CONTENT_STATE.LOADING);
   const [artistName, setArtistName] = React.useState("");
   const [tokenName, setTokenName] = React.useState("");
@@ -245,17 +249,36 @@ React.useEffect(() =>
 
   function importJail(data)
   {
+    importData.current = data;
+    setContentState(CONTENT_STATE.IMPORT_PROMPT);
     //setContentState(CONTENT_STATE.LOADING);
     //console.log('import jail' , data);
     // check that data is valid, comform to FxStorage
-    if( data.artists == null || data.collections == null)
+    
+  }
+
+  function handleImportConfirm(method:string)
+  {
+
+    console.log("handleImportClose ", method, importData.current, data.current)
+    if( importData.current.artists == null || importData.current.collections == null)
     {
       console.log("invalid data");
       return;
     }
 
+    if( method === "merge")
+    {
+      importData.current.artists = importData.current.artists.concat(data.current.artists);
+      importData.current.collections = importData.current.collections.concat(data.current.collections);
+      console.log(importData.current as FxStorage)
+      FxStorage.removeDuplicates(importData.current);
+      
+    }
+
+
     (async () => {
-      const response = await chrome.runtime.sendMessage({ type: FXJ_Actions.SET_STATE, payload:data });
+      const response = await chrome.runtime.sendMessage({ type: FXJ_Actions.SET_STATE, payload:importData.current, method:method });
       //console.log("response appppp ? " , response);
       data.current = response;
       setContentState(CONTENT_STATE.IDLE);
@@ -270,7 +293,7 @@ React.useEffect(() =>
       <EndPickPopup open={contentState === CONTENT_STATE.PICKED}  artist={artistName} token={tokenName} slug={slug} elem={targetElem} onClose={onEndPickClose}/>
       <PickingOverlay open={contentState === CONTENT_STATE.PICKING} onClose={finishPick}/>
       <Jail open={contentState === CONTENT_STATE.JAIL} onClose={HandleJailClose} dirty={isJailDirty} onExport={exportJail} onImport={importJail} />
-      
+      <ImportTypePrompt open={contentState === CONTENT_STATE.IMPORT_PROMPT} onClose={handleImportConfirm}/>
     </>
 
   );

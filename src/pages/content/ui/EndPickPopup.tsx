@@ -5,6 +5,11 @@ import { LockIcon } from '@chakra-ui/icons';
 import useStorage from '@src/shared/hooks/useStorage';
 import exampleThemeStorage from '@root/src/shared/storages/exampleThemeStorage';
 
+/**
+ * Popup that displays after the user has selected a card
+ * @param props 
+ * @returns component
+ */
 export default function EndPickPopup(props:any)
 {
     const [open, setOpen] = React.useState(props.open);
@@ -23,7 +28,7 @@ export default function EndPickPopup(props:any)
         setArtistName(props.artist);
         setTokenName(props.token);
         setAnchorEl(props.elem);
-        console.log(props.elem);
+        //console.log(props.elem);
     }, [props]);
 
     const getLeft = () => {
@@ -40,18 +45,18 @@ export default function EndPickPopup(props:any)
     }
 
     const handleArtistClick = () => {
-        console.log('handleArtistClick ->', artistName);
+        //console.log('handleArtistClick ->', artistName);
         props.onClose("artist");
     }
 
     const handleCollectionClick = () => {
-        console.log('handleCollectionClick ->', tokenName);
+        //console.log('handleCollectionClick ->', tokenName);
         props.onClose("collection");
     }
 
 
     const handleClose = () => {
-        console.log( "HandleCLOSE ", props);
+        //console.log( "HandleCLOSE ", props);
         props.onClose("cancel");
     }
     
@@ -62,6 +67,7 @@ export default function EndPickPopup(props:any)
             placement='right'
             onClose={handleClose}
             closeOnBlur={true}
+            
             >
             <PopoverTrigger>
                 <Box 

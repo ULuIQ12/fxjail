@@ -13,20 +13,32 @@ reloadOnUpdate('pages/background');
  */
 reloadOnUpdate('pages/content/style.scss');
 
-fxJailStorage.set(fxJailStorage => { return { 
-    artists: 
-    [
-        //new JailItem("artist1", "url1"), 
-    ],
-    collections:
-    [
-        //new JailItem("collection1", "url1"), 
-    ],
- }; });
+/**
+ * Handles storage managment
+ */
+
+/** Initialization */
+chrome.runtime.onInstalled.addListener(() => {
+    fxJailStorage.set(fxJailStorage => { return { 
+        artists: 
+        [
+            //new JailItem("artist1", "url1"), 
+        ],
+        collections:
+        [
+            //new JailItem("collection1", "url1"), 
+        ],
+    }; });
+    
+});
+
 fxJailStorage.get().then( (data) => { console.log('storage', data); } );
 exampleThemeStorage.get().then( (data) => { console.log('themeStorage', data); } );
 
-
+/**
+ * Add an artist name to the list
+ * @param artist name of the artist
+ */
 async function addArtist(artist: JailItem) {
     //console.log('addArtist', artist);
     await fxJailStorage.set(fxJailStorage => {
@@ -43,6 +55,10 @@ async function addArtist(artist: JailItem) {
     });
 }
 
+/**
+ * Removes an artist from list
+ * @param artist 
+ */
 async function removeArtist(artist: string) {
     //console.log('removeArtist', artist);
     await fxJailStorage.set(fxJailStorage => {
@@ -50,7 +66,10 @@ async function removeArtist(artist: string) {
         return fxJailStorage;
     });
 }
-
+/**
+ * Add a collection to the list
+ * @param collection The name of the collection
+ */
 async function addCollection(collection: JailItem) {
     //console.log('addCollection', collection);
     await fxJailStorage.set(fxJailStorage => {
@@ -66,6 +85,10 @@ async function addCollection(collection: JailItem) {
     });
 }
 
+/**
+ * Removes a collection form the list
+ * @param collection The aanem of the collection
+ */
 async function removeCollection(collection: string) {
     //console.log('removeCollection', collection);
     await fxJailStorage.set(fxJailStorage => {
@@ -74,6 +97,7 @@ async function removeCollection(collection: string) {
     });
 }
 
+/** Update storage with new data (in the case of loading an external json) */
 async function setData( data:FxStorage) {
     await fxJailStorage.set(fxJailStorage => {
         fxJailStorage = data;
@@ -82,11 +106,14 @@ async function setData( data:FxStorage) {
 }
 
 // LISTENERS
-chrome.runtime.onInstalled.addListener(() => {
+//chrome.runtime.onInstalled.addListener(() => {
     chrome.runtime.onMessage.addListener((message: FXJ_Message, _, sendResponse) => {
 
         //console.log('background : message received ->' , message.type, message.payload);
 
+        /** 
+         * storage retrieveal for the various components
+         */
         if (message.type === FXJ_Actions.GET_STATE) {
             fxJailStorage.get().then( (data) => {
                 //console.log( "Data from storage", data, sendResponse);
@@ -94,6 +121,9 @@ chrome.runtime.onInstalled.addListener(() => {
             } );
         }
 
+        /**
+         * Override the storage in the case of loading from a json
+         */
         if(message.type == FXJ_Actions.SET_STATE) {
             (async () => {
                 await setData(message.payload);
@@ -104,6 +134,9 @@ chrome.runtime.onInstalled.addListener(() => {
             })();    
         }
 
+        /**
+         * handles add artist request and sends back the updated storage
+         */
         if( message.type === FXJ_Actions.ADD_ARTIST) {
             (async () => {
                 await addArtist(message.payload);
@@ -114,6 +147,9 @@ chrome.runtime.onInstalled.addListener(() => {
             })();
         }
 
+        /**
+         * handles artist removal, sends back the updated storage
+         */
         if( message.type === FXJ_Actions.RELEASE_ARTIST) {
             (async () => {
                 await removeArtist(message.payload);
@@ -124,6 +160,9 @@ chrome.runtime.onInstalled.addListener(() => {
             })();
         }
 
+        /**
+         * Adds a collection and sends back the update data
+         */
         if( message.type === FXJ_Actions.ADD_COLLECTION) {
             (async () => {
                 await addCollection(message.payload);
@@ -133,6 +172,9 @@ chrome.runtime.onInstalled.addListener(() => {
             })();
         }
 
+        /**
+         * Removes a collection and sends back the updated data
+         */
         if( message.type === FXJ_Actions.RELEASE_COLLECTION) {
             
             (async () => {
@@ -146,4 +188,4 @@ chrome.runtime.onInstalled.addListener(() => {
 
         return true;
     });
-});
+//});
