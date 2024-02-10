@@ -30,9 +30,44 @@ export default function App() {
   const [slug, setSlug] = React.useState("");
   const [targetElem, setTargetElement] = React.useState(null);
 
-  const cardContainerClass = "Card_container__dn3j_";
-  const tokenCardClass = ".GenerativeTokenCard_anchor__0RiND";
-  const bigContainerClass = "CardsContainer_container__D68gk";
+  const GENERIC_CARD_CONTAINER_CLASS = "Card_container_";
+  const cardElems = document.querySelectorAll( '[ class^="'+GENERIC_CARD_CONTAINER_CLASS+'" ]' );
+  let cardContainerClass:string;
+  if( cardElems.length > 0)
+  {
+    cardContainerClass = cardElems[0].classList[0].toString();
+  }
+  else 
+  {
+    console.log("Can't find card container class, default to Card_container__Ng56K")
+    cardContainerClass = "Card_container__Ng56K";
+  }
+
+  const GENERIC_TOKEN_CARD_CLASS = "GenerativeTokenCard_anchor_";
+  let tokenCardClass:string;
+  const tokenElems = document.querySelectorAll( '[ class^="'+GENERIC_TOKEN_CARD_CLASS+'" ]' );
+  if( tokenElems.length > 0)
+  {
+    tokenCardClass = "." + tokenElems[0].classList[0].toString();
+  }
+  else 
+  {
+    console.log("Can't find token card class, default to GenerativeTokenCard_anchor__DbGXY")
+    tokenCardClass = ".GenerativeTokenCard_anchor__DbGXY";
+  }
+
+  const GENERIC_BIG_CONTAINER_CLASS = "CardsContainer_container_";
+  const bigContainerElems = document.querySelectorAll( '[ class^="'+GENERIC_BIG_CONTAINER_CLASS+'" ]' );
+  let bigContainerClass:string;
+  if( bigContainerElems.length > 0)
+  {
+    bigContainerClass = bigContainerElems[0].classList[0].toString();
+  }
+  else 
+  {
+    console.log("Can't find big container class, default to CardsContainer_container__JeuYq")
+    bigContainerClass = "CardsContainer_container__JeuYq";
+  }
 
   const isJailDirty = React.useRef(false);
   const flaggedNodes = React.useRef([]);
@@ -41,6 +76,7 @@ export default function App() {
   {
     //console.log("refreshPageState ", caller, event);
     const container = document.getElementsByClassName(cardContainerClass);
+    
     const bigContainer = document.getElementsByClassName(bigContainerClass)[0];
     if( bigContainer == null)
     {

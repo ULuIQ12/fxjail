@@ -11,7 +11,49 @@ export default function PickingOverlay(props:any)
     
     const MOUSE_VISITED_CLASSNAME = 'crx_mouse_visited';
     //const CARD_CLASS = "div.GenerativeTokenCard_anchor__0RiND";
-    const CARD_CLASS = ".Card_container__dn3j_";
+    //const CARD_CLASS = ".Card_container__dn3j_";
+    const GENERIC_CARD_CLASS = "Card_container_";
+    const cardElems = document.querySelectorAll( '[ class^="'+GENERIC_CARD_CLASS+'" ]' );
+    let CARD_CLASS = "";
+    if( cardElems.length > 0)
+    {
+        CARD_CLASS = "." + cardElems[0].classList[0].toString();
+    }
+    else 
+    {
+        console.log("Can't find token card class, default to GenerativeTokenCard_anchor__DbGXY")
+        CARD_CLASS = ".Card_container__dn3j_";
+    }
+    
+    //const CARD_CLASS = ".Card_container__Ng56K";  
+    
+    const GENERIC_CARD_TITLE_CLASS = "GenerativeTokenCard_title_";
+    const titleElems = document.querySelectorAll( '[ class^="'+GENERIC_CARD_TITLE_CLASS+'" ]' );
+    let cardID = "";
+    if( titleElems.length > 0)
+    {
+        cardID = "." + titleElems[0].classList[0].toString();
+    }
+    else 
+    {
+        console.log("Can't find token title class, default to GenerativeTokenCard_title__y4k6B")
+        cardID = ".GenerativeTokenCard_title__y4k6B";
+    }
+    //const cardID:string = ".GenerativeTokenCard_title__y4k6B";
+    
+    const GENERIC_USER_NAME_CLASS = "UserBadge_user_name_";
+    const badgeElems = document.querySelectorAll( '[ class^="'+GENERIC_USER_NAME_CLASS+'" ]' );
+    let badgeID = "";
+    if( badgeElems.length > 0)
+    {
+        badgeID = "." + badgeElems[0].classList[0].toString();
+    }
+    else 
+    {
+        console.log("Can't find token artist class, default to UserBadge_user_name__WOGMP")
+        badgeID = ".UserBadge_user_name__WOGMP";
+    }
+    //const badgeID:string = ".UserBadge_user_name__WOGMP";
     
     const prevDOM = React.useRef(null);
     const refDOM = React.useRef(null);
@@ -120,8 +162,7 @@ export default function PickingOverlay(props:any)
     }, [props.open, highlightCartPointerMove, handleKeyDown, handleResize, handleVisibilityChange, handleClick, handleBlur]);
 
 
-    const cardID:string = ".GenerativeTokenCard_title__7NcjJ";
-    const badgeID:string = ".UserBadge_user_name__VDCJZ";
+    
     const stopPick = React.useCallback((reason) => {
         let title = "";
         let artist = "";
